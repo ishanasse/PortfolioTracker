@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<div class="container mb-1">
+    <div class="row mx-auto">
+        <div class="col" style="color:green;"><h4>User's Portfolio</h4></div>
+        <a type="submit" class="btn btn-outline-success text-right" href="/portfolio/add/">Add Stocks</a>
+    </div>
+    <table class="table">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">Symbol</th>
+            <th scope="col">Company</th>
+            <th scope="col">Exchange</th>
+            <th scope="col">Market_Price</th>
+            <th scope="col">Buy_Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Profit/Loss</th>
+            <th scope="col">P/L Percent</th>
+            <th scope="col">Action</th>
+            <th scope="col">Live Data</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for article in articles %}
+        <tr>
+            <th scope="row">Symbol</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

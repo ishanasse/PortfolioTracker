@@ -22,18 +22,18 @@
         </tr>
         </thead>
         <tbody>
-        {% for article in articles %}
-        <tr>
-            <th scope="row">Symbol</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
+        {% for stock in stocks %}
+        <tr class="text-center">
+            <th scope="row">{{stock.ticker_symbol}}</th>
+            <td>{{stock.ticker_company}}</td>
+            <td>{{stock.ticker_exchange}}</td>
+            <td>--</td>
+            <td>{{stock.buy_price}}</td>
+            <td>{{stock.buy_quantity}}</td>
+            <td>--</td>
+            <td>--</td>
+            <td>--</td>
+            <td>--</td>
         </tr>
         {% endfor %}
         </tbody>

@@ -5,22 +5,21 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class TickerModel(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    ticker = models.CharField(max_length=25)
+    # ticker_owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    ticker_symbol = models.CharField(max_length=25)
     ticker_company = models.CharField(max_length=50)
-    ticker_type = models.CharField(max_length=50)
-    ticket_exchange = models.CharField(max_length=50)
-
-    mrkt_price = models.FloatField(max_length=25)
+    ticker_exchange = models.CharField(max_length=50)
+    # mrkt_price = models.FloatField(max_length=25)
     buy_price = models.FloatField(max_length=25)
-    quantity = models.IntegerField()
+    buy_quantity = models.IntegerField()
     bought_when = models.CharField(max_length=50)
-    is_sold = models.BooleanField()
-    sell_price = models.FloatField(max_length=25)
-    profit_loss = models.FloatField(max_length=25)
-    pl_percent = models.CharField(max_length=25)
+    # profit_loss = models.FloatField(max_length=25)
+    # pl_percent = models.CharField(max_length=25)
+    # is_sold = models.BooleanField()
+    # sell_price = models.FloatField(max_length=25)
 
-
+    # def __str__(self):
+    #     return str(self.ticker_symbol)+str(user)
 
     # ticker = "AAPL"
     # ticker_company = "Apple Inc."
@@ -35,7 +34,6 @@ class TickerModel(models.Model):
 
     # is_sold = False
     # sell_price = None
-
 
     # title = models.CharField(max_length=100)
     # category = models.CharField(max_length=30)

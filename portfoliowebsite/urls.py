@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.urls import path
-from .views import Portfolio, AddToPortfolio
+from .views import Portfolio, SearchToAdd
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-    #path('', login_required(Portfolio.as_view())),
-    path('', Portfolio.as_view()),
-    path('add/', AddToPortfolio.as_view()),
+    # path('', login_required(Portfolio.as_view())),
+    path("", Portfolio.as_view()),
+    path("add/", SearchToAdd.as_view()),
 ]

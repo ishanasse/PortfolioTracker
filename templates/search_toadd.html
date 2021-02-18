@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load crispy_forms_tags %}
+<a class="ml-3" href="/portfolio/"> < &nbsp; Back to portfolio </a>
+<form class="form-inline" method="post">
+    {% csrf_token %}
+    <div class="form-group mx-sm-3 mb-2">
+        <label for="ticker">Enter Ticker to search</label>
+        <input class="ml-4" id="ticker" type="text" placeholder="ex. AAPL" class="form-control" name="ticker" style="width: 100px;">
+    </div>
+        <button class="btn btn-outline-primary mb-2" name="search">Search</button>
+</form>
+<br>
+    <div class="col-3 mx-4" style="background-color:#e3f2fd; border:1px solid #000000; border-radius: 10px;">
+        <div class="row ml-2">
+            <div class="col-sm">
+                Symbol
+            </div>
+            <div class="col-sm">
+                {{details.symbol}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                Short Name
+            </div>
+            <div class="col-sm">
+                {{details.shortName}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                Type
+            </div>
+            <div class="col-sm">
+                {{details.quoteType}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                Exchange
+            </div>
+            <div class="col-sm">
+                {{details.fullExchangeName}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                Previous Close
+            </div>
+            <div class="col-sm">
+                {{details.regularMarketPreviousClose}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                Price at Open
+            </div>
+            <div class="col-sm">
+                {{details.regularMarketOpen}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                Market Price
+            </div>
+            <div class="col-sm">
+                {{details.regularMarketPrice}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                Price Change
+            </div>
+            <div class="col-sm">
+                {{details.regularMarketChange}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                Change Percent%
+            </div>
+            <div class="col-sm">
+                {{details.regularMarketChangePercent}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                Volume
+            </div>
+            <div class="col-sm">
+                {{details.regularMarketVolume}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                Day Range
+            </div>
+            <div class="col-sm">
+                {{details.regularMarketDayRange}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                52-W Range
+            </div>
+            <div class="col-sm">
+                {{details.fiftyTwoWeekRange}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                50-Day Avg
+            </div>
+            <div class="col-sm">
+                {{details.fiftyDayAverage}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                Currency
+            </div>
+            <div class="col-sm">
+                {{details.currency}}
+            </div>
+        </div>
+        <div class="row ml-2">
+            <div class="col-sm">
+                Market Status
+            </div>
+            <div class="col-sm">
+                {{details.marketState}}
+            </div>
+        </div>
+</div>
+<br>
+{% load crispy_forms_tags %}
+<form class="form-inline" method="post">
+    {% csrf_token %}
+    <div class="form-group mx-sm-3 mb-2">
+        <label for="ticker">
+            Buy
+            <a class="ml-2 mr-2" style="color:#1184ff;">{{details.symbol}}</a>
+            at
+            <a class="ml-2 mr-1" style="color:#1184ff;">{{details.regularMarketPrice}}</a>?
+            <label class="ml-5">Quantity:</label>
+        </label>
+        <input class="ml-2" id="ticker" type="text" placeholder="max. 1000" class="form-control" name="buy_quantity" style="width: 100px;">
+    </div>
+        <button class="btn btn-outline-success mb-2" name="buy">Buy</button>
+</form>
+{% endblock %}

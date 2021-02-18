@@ -33,7 +33,7 @@
           </nav>
     </head>
     <br>
-    <body>
+    <body style="margin-bottom: 65px;">
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }}">
@@ -44,8 +44,11 @@
         {% block content %}
 
         {% endblock %}
-        <nav class="navbar fixed-bottom navbar-light" style="background-color: #e3f2fd;">
-            <label class="ml-auto"> CONTACT US <br> Email : help@blogbench.com Phone : 18188881111 Ext xyz</label>
-        </nav>
     </body>
+    <nav class="navbar fixed-bottom navbar-light" style="background-color: #e3f2fd;">
+        <div class="col-6">
+            <div class="row">CONTACT US</div>
+            <div class="row">Email : help@portfoliotracker.com &emsp; Phone : 18188881111 Ext xyz</div>
+        </div>
+    </nav>
 </html>

@@ -1,4 +1,6 @@
 from backend.call_yf import fetch_data
+
+# from call_yf import fetch_data
 from pprint import pprint
 
 important_details_list = [
@@ -40,7 +42,20 @@ def retrieve_data(tickers: list) -> dict:
                     detail_data = "--"
                 verified_tickers_data[ticker][detail] = detail_data
     return verified_tickers_data
-    # pprint(verified_tickers_data)
 
 
-# retrieve_data(["AAPL","TSLA","NAKD", "YYYY"])
+def get_market_price(tickers: list) -> dict:
+
+    tickers_data = fetch_data(tickers)
+    tickers_market_price = {}
+    for ticker in tickers:
+        tickers_market_price[ticker] = {
+            "market_price": tickers_data[ticker]["quoteResponse"]["result"][0][
+                "regularMarketPrice"
+            ]
+        }
+    return tickers_market_price
+
+
+# print(retrieve_data(["AAPL","TSLA","NAKD", "YYYY"]))
+# print(get_market_price(["AAPL","TSLA","NAKD"]))

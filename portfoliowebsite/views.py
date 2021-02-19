@@ -3,34 +3,56 @@ from django.http import HttpResponse
 from django.views import View
 from portfoliowebsite.models import TickerModel
 from django.utils import timezone
-from datetime import datetime
+from datetime import date
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from backend.retrieve_tickers_data import retrieve_data
+from backend.retrieve_tickers_data import get_market_price
 
 
 # Create your views here.
 class Portfolio(View):
     def get(self, request):
         stocks = TickerModel.objects.all()
-        print(stocks)
-        return render(request, "portfolio.html", {"stocks": stocks})
+        portfolio_symbols = []
+        stocks_buy_stats = {}
+        for stock in stocks:
+            portfolio_symbols.append(stock.ticker_symbol)
+            stocks_buy_stats[stock.ticker_symbol] = {"buy_price": stock.buy_price}
+            stocks_buy_stats[stock.ticker_symbol]["buy_quantity"] = stock.buy_quantity
+        # print(stocks_buy_stats)
+        additional_data = get_market_price(portfolio_symbols)
+        for stock in portfolio_symbols:
+            additional_data[stock]["pl_amount"] = round(
+                (
+                    additional_data[stock]["market_price"]
+                    - stocks_buy_stats[stock]["buy_price"]
+                )
+                * stocks_buy_stats[stock]["buy_quantity"],
+                2,
+            )
+            additional_data[stock]["pl_percent"] = round(
+                (additional_data[stock]["pl_amount"] * 100)
+                / (
+                    stocks_buy_stats[stock]["buy_price"]
+                    * stocks_buy_stats[stock]["buy_quantity"]
+                ),
+                2,
+            )
+        print(additional_data)
+        return render(
+            request,
+            "portfolio.html",
+            {"stocks": stocks, "additional_data": additional_data},
+        )
 
     def post(self, request):
-        title = request.POST["title"]
-        category = request.POST["category"]
-        # author = request.POST["author"]
-        author = request.user
-        content = request.POST["content"]
-
-        TickerModel.objects.create(
-            title=title,
-            category=category.upper(),
-            author=author,
-            content=content,
-            created_at=datetime.now(),
-        )
-        return redirect("/articles/")
+        if "sell" in request.POST:
+            sell_ticker = request.POST.get("sell")
+            print(f"Selling {sell_ticker}")
+            TickerModel.objects.filter(ticker_symbol=sell_ticker).delete()
+            stocks = TickerModel.objects.all()
+            return render(request, "portfolio.html", {"stocks": stocks})
 
 
 class SearchToAdd(View):
@@ -56,6 +78,11 @@ class SearchToAdd(View):
             )
 
         elif ("buy" in request.POST) and (SearchToAdd.ticker != ""):
+            if len(TickerModel.objects.all()) > 10:
+                messages.warning(
+                    request, "FAILURE: Unable to track more than 10 stocks."
+                )
+                return redirect("/portfolio/")
             try:
                 buy_quantity = int(request.POST.get("buy_quantity"))
                 if buy_quantity > 0 and buy_quantity < 1001:
@@ -64,10 +91,10 @@ class SearchToAdd(View):
                     ticker_company = SearchToAdd.ticker_data["shortName"]
                     ticker_exchange = SearchToAdd.ticker_data["fullExchangeName"]
                     buy_price = SearchToAdd.ticker_data["regularMarketPrice"]
-                    bought_when = datetime.now()
+                    bought_when = str(date.today())
+                    # is_sold = SearchToAdd.ticker_data[""]
                     # profit_loss = SearchToAdd.ticker_data[""]
                     # pl_percent = SearchToAdd.ticker_data[""]
-                    # is_sold = SearchToAdd.ticker_data[""]
                     # sell_price = SearchToAdd.ticker_data[""]
                     TickerModel.objects.create(
                         ticker_symbol=ticker_symbol.upper(),

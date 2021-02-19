@@ -19,12 +19,8 @@
               <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <a class="nav-item nav-link active" href="/accounts/logged_in">Home <span class="sr-only">(current)</span></a>
-                    <a class="nav-item nav-link" href="/articles/">All-Articles</a>
-                    <a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Contact Us</a>
-                    <a class="btn btn-outline-secondary ml-auto" href="/articles/add_article">Add Article</a>
-                </div>
+                {% block head %}
+                {% endblock %}
                 <div class="navbar-nav ml-auto">
                     <a class="nav-item nav-link active" style="color:#1184ff;">Hello {{request.user.username}}!<span class="sr-only">(current)</span></a>
                     <a class="btn btn-outline-secondary" href="/accounts/logout">Log Out</a>
@@ -42,7 +38,6 @@
             {% endfor %}
         {% endif %}
         {% block content %}
-
         {% endblock %}
     </body>
     <nav class="navbar fixed-bottom navbar-light" style="background-color: #e3f2fd;">

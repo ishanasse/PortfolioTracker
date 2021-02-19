@@ -1,10 +1,21 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<p>
+    <div class="navbar-nav">
+        <a class="nav-item nav-link" href="/accounts/logged_in">Home</a>
+        <a class="nav-item nav-link active" href="/portfolio/">Portfolio</a>
+        <a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Contact Us</a>
+        <a class="btn btn-outline-secondary ml-auto" href="/articles/add_article">Random?</a>
+    </div>
+</p>
+{% endblock %}
 {% block content %}
 {% load static %}
 <div class="container mb-1">
     <div class="row mx-auto">
         <div class="col" style="color:green;"><h4>User's Portfolio</h4></div>
-        <a type="submit" class="btn btn-outline-success text-right" href="/portfolio/add/">Add Stocks</a>
+        <a type="submit" class="btn btn-outline-success text-right" href="/portfolio/add/">Buy Stocks</a>
     </div>
     <table class="table">
         <thead class="thead-light">
@@ -15,6 +26,7 @@
             <th scope="col">Market_Price</th>
             <th scope="col">Buy_Price</th>
             <th scope="col">Quantity</th>
+            <th scope="col">Bougth_On</th>
             <th scope="col">Profit/Loss</th>
             <th scope="col">P/L Percent</th>
             <th scope="col">Action</th>
@@ -30,10 +42,11 @@
             <td>--</td>
             <td>{{stock.buy_price}}</td>
             <td>{{stock.buy_quantity}}</td>
+            <td>{{stock.bought_when}}</td>
             <td>--</td>
             <td>--</td>
-            <td>--</td>
-            <td>--</td>
+            <td><form class="form" method="post">{% csrf_token %}<button class="btn btn-secondary" name="sell" value="{{stock.ticker_symbol}}">Sell</button></form></td>
+            <td><a class="btn btn-outline-primary" href="https://in.finance.yahoo.com/quote/{{stock.ticker_symbol}}" target="_blank">Live</a></td>
         </tr>
         {% endfor %}
         </tbody>

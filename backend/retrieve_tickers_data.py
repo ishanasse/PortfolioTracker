@@ -49,11 +49,9 @@ def get_market_price(tickers: list) -> dict:
     tickers_data = fetch_data(tickers)
     tickers_market_price = {}
     for ticker in tickers:
-        tickers_market_price[ticker] = {
-            "market_price": tickers_data[ticker]["quoteResponse"]["result"][0][
-                "regularMarketPrice"
-            ]
-        }
+        tickers_market_price[ticker] = tickers_data[ticker]["quoteResponse"]["result"][
+            0
+        ]["regularMarketPrice"]
     return tickers_market_price
 
 

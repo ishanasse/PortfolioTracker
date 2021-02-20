@@ -28,9 +28,9 @@
             <th scope="col">Quantity</th>
             <th scope="col">Bougth_On</th>
             <th scope="col">Profit/Loss</th>
-            <th scope="col">P/L Percent</th>
+            <th scope="col">P/L %</th>
             <th scope="col">Action</th>
-            <th scope="col">Live Data</th>
+            <th scope="col">LiveData</th>
         </tr>
         </thead>
         <tbody>
@@ -39,12 +39,12 @@
             <th scope="row">{{stock.ticker_symbol}}</th>
             <td>{{stock.ticker_company}}</td>
             <td>{{stock.ticker_exchange}}</td>
-            <td>--</td>
+            <td style="color:{{stock.color}};">{{stock.market_price}}</td>
             <td>{{stock.buy_price}}</td>
             <td>{{stock.buy_quantity}}</td>
             <td>{{stock.bought_when}}</td>
-            <td>--</td>
-            <td>--</td>
+            <td style="color:{{stock.color}};">{{stock.pl_amount}}</td>
+            <td style="color:{{stock.color}};">{{stock.pl_percent}} %</td>
             <td><form class="form" method="post">{% csrf_token %}<button class="btn btn-secondary" name="sell" value="{{stock.ticker_symbol}}">Sell</button></form></td>
             <td><a class="btn btn-outline-primary" href="https://in.finance.yahoo.com/quote/{{stock.ticker_symbol}}" target="_blank">Live</a></td>
         </tr>

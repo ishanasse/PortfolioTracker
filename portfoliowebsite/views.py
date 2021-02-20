@@ -18,33 +18,27 @@ class Portfolio(View):
         stocks_buy_stats = {}
         for stock in stocks:
             portfolio_symbols.append(stock.ticker_symbol)
-            stocks_buy_stats[stock.ticker_symbol] = {"buy_price": stock.buy_price}
-            stocks_buy_stats[stock.ticker_symbol]["buy_quantity"] = stock.buy_quantity
+            # stocks_buy_stats[stock.ticker_symbol] = {"buy_price" : stock.buy_price}
+            # stocks_buy_stats[stock.ticker_symbol]["buy_quantity"] = stock.buy_quantity
         # print(stocks_buy_stats)
-        additional_data = get_market_price(portfolio_symbols)
-        for stock in portfolio_symbols:
-            additional_data[stock]["pl_amount"] = round(
-                (
-                    additional_data[stock]["market_price"]
-                    - stocks_buy_stats[stock]["buy_price"]
-                )
-                * stocks_buy_stats[stock]["buy_quantity"],
-                2,
+        # additional_data = get_market_price(portfolio_symbols)
+        market_price_data = get_market_price(list(set(portfolio_symbols)))
+        print(market_price_data)
+        for stock in stocks:
+            stock.market_price = market_price_data[stock.ticker_symbol]
+            stock.pl_amount = round(
+                ((stock.market_price - stock.buy_price) * stock.buy_quantity), 2
             )
-            additional_data[stock]["pl_percent"] = round(
-                (additional_data[stock]["pl_amount"] * 100)
-                / (
-                    stocks_buy_stats[stock]["buy_price"]
-                    * stocks_buy_stats[stock]["buy_quantity"]
-                ),
-                2,
+            stock.pl_percent = round(
+                ((stock.pl_amount * 100) / (stock.buy_quantity * stock.buy_price)), 2
             )
-        print(additional_data)
-        return render(
-            request,
-            "portfolio.html",
-            {"stocks": stocks, "additional_data": additional_data},
-        )
+            stock.color = "#22bd00" if stock.pl_amount > 0 else "#bd0000"
+            print(stock.pl_amount, stock.pl_percent, stock.color)
+        # for stock in portfolio_symbols:
+        #     additional_data[stock]["pl_amount"] = round((additional_data[stock]["market_price"] - stocks_buy_stats[stock]["buy_price"]) * stocks_buy_stats[stock]["buy_quantity"],2)
+        #     additional_data[stock]["pl_percent"] = round((additional_data[stock]["pl_amount"]*100)/(stocks_buy_stats[stock]["buy_price"] * stocks_buy_stats[stock]["buy_quantity"]),2)
+        # print(additional_data)
+        return render(request, "portfolio.html", {"stocks": stocks})
 
     def post(self, request):
         if "sell" in request.POST:

@@ -3,10 +3,10 @@
 {% block head %}
 <p>
     <div class="navbar-nav">
-        <a class="nav-item nav-link" href="/accounts/logged_in">Home</a>
+        <a class="nav-item nav-link" href="">Home</a>
         <a class="nav-item nav-link active" href="/portfolio/">Portfolio</a>
         <a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Contact Us</a>
-        <a class="btn btn-outline-secondary ml-auto" href="/articles/add_article">Random?</a>
+        <a class="btn btn-outline-secondary ml-auto" href="">Random?</a>
     </div>
 </p>
 {% endblock %}
@@ -14,7 +14,7 @@
 {% load static %}
 <div class="container mb-1">
     <div class="row mx-auto">
-        <div class="col" style="color:green;"><h4>User's Portfolio</h4></div>
+        <div class="col" style="color:green;"><h4>{{request.user.username}}'s Portfolio &#128176;</h4></div>
         <a type="submit" class="btn btn-outline-success text-right" href="/portfolio/add/">Buy Stocks</a>
     </div>
     <table class="table">

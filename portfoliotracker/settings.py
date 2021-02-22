@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "portfoliowebsite",
     "crispy_forms",
+    "accounts",
 ]
 
 MIDDLEWARE = [
@@ -114,3 +115,5 @@ STATIC_URL = "/static/"
 STATIC_ROOT = str(BASE_DIR) + "/static/"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+LOGIN_URL = "/"

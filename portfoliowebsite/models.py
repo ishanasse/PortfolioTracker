@@ -5,10 +5,12 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class TickerModel(models.Model):
-    # ticker_owner = models.ForeignKey(User, on_delete=models.CASCADE)
     ticker_symbol = models.CharField(max_length=25)
     ticker_company = models.CharField(max_length=50)
     ticker_exchange = models.CharField(max_length=50)
+    ticker_owner = models.ForeignKey(
+        User, related_name="ticker_owner", on_delete=models.CASCADE
+    )
     # mrkt_price = models.FloatField(max_length=25)
     buy_price = models.FloatField(max_length=25)
     buy_quantity = models.IntegerField()

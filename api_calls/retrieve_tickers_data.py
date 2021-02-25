@@ -1,4 +1,4 @@
-from backend.call_yf import fetch_data
+from api_calls.call_yf import fetch_data
 
 # from call_yf import fetch_data
 from pprint import pprint

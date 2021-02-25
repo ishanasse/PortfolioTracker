@@ -113,7 +113,6 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = str(BASE_DIR) + "/static/"
-
 CRISPY_TEMPLATE_PACK = "bootstrap4"
-
 LOGIN_URL = "/"
+SESSION_COOKIE_AGE = 10800

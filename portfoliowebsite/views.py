@@ -6,8 +6,8 @@ from django.utils import timezone
 from datetime import date
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
-from backend.retrieve_tickers_data import retrieve_data
-from backend.retrieve_tickers_data import get_market_price
+from api_calls.retrieve_tickers_data import retrieve_data, get_market_price
+from .backend_functions import move_to_pt_history
 
 
 # Create your views here.
@@ -33,7 +33,7 @@ class HomePage(View):
 class Portfolio(View):
     def get(self, request):
         if not request.user.is_authenticated:
-            messages.warning(request, "Please log-in to access your Portfolio.")
+            messages.warning(request, "Please log-in to access your Portfolio")
             return redirect("/")
         # stocks = TickerModel.objects.all()
         stocks = TickerModel.objects.filter(ticker_owner=request.user)
@@ -49,16 +49,54 @@ class Portfolio(View):
             stock.pl_percent = round(
                 ((stock.pl_amount * 100) / (stock.buy_quantity * stock.buy_price)), 2
             )
-            stock.color = "#22bd00" if stock.pl_amount > 0 else "#bd0000"
+            stock.color = "#1da400" if stock.pl_amount > 0 else "#bd0000"
         return render(request, "portfolio.html", {"stocks": stocks})
 
     def post(self, request):
         if "sell" in request.POST:
+            try:
+                sell_quantity = int(request.POST["qty"])
+            except:
+                messages.warning(request, "Invalid quantity")
+                return redirect("/portfolio/")
             sell_ticker = request.POST.get("sell")
-            print(f"Selling {sell_ticker}")
-            TickerModel.objects.filter(ticker_symbol=sell_ticker).delete()
-            stocks = TickerModel.objects.all()
-            return render(request, "portfolio.html", {"stocks": stocks})
+            print(f"Selling {sell_ticker} Qty:{sell_quantity}")
+            sell_queryset = TickerModel.objects.filter(
+                ticker_owner=request.user
+            )  # , ticker_symbol=sell_ticker)
+            for sell_instance in sell_queryset:
+                if sell_instance.ticker_symbol == sell_ticker:
+                    if sell_quantity > sell_instance.buy_quantity:
+                        messages.warning(
+                            request, "Quantity to sell greater-than Quantity owned"
+                        )
+                        return redirect("/portfolio/")
+
+                    else:
+                        all_sold = False
+                        if sell_quantity < sell_instance.buy_quantity:
+                            print(sell_instance.ticker_symbol)
+                            sell_instance.buy_quantity = (
+                                sell_instance.buy_quantity - sell_quantity
+                            )
+                            sell_instance.save()
+
+                        else:
+                            all_sold = True
+
+                        # write SELL LOGIC here for PORTFOLIO HISTORY
+                        print(
+                            sell_instance.ticker_owner,
+                            sell_instance.ticker_symbol,
+                            sell_instance.buy_quantity,
+                        )
+                        # move_to_pt_history({"symbol":sell_instance.ticker_symbol,"company":sell_instance.ticker_company, "owner":sell_instance.ticker_owner,
+                        # "buyprice":sell_instance.buy_price, "buydate":sell_instance.bought_when, "sellprice":get_market_price([sell_ticker])[sell_ticker],
+                        # "selldate":str(date.today()), "buyquantity":sell_instance.buy_quantity})
+
+                        if all_sold == True:
+                            sell_instance.delete()
+            return redirect("/portfolio/")
 
 
 class SearchToAdd(View):
@@ -68,7 +106,7 @@ class SearchToAdd(View):
 
     def get(self, request):
         if not request.user.is_authenticated:
-            messages.warning(request, "Please log-in to update your Portfolio.")
+            messages.warning(request, "Please log-in to update your Portfolio")
             return redirect("/")
         return render(request, "search_toadd.html")
 
@@ -89,7 +127,7 @@ class SearchToAdd(View):
         elif ("buy" in request.POST) and (SearchToAdd.ticker != ""):
             if len(TickerModel.objects.all()) > 10:
                 messages.warning(
-                    request, "FAILURE: Unable to track more than 10 stocks."
+                    request, "FAILURE: Unable to track more than 10 stocks"
                 )
                 return redirect("/portfolio/")
             try:
@@ -124,7 +162,7 @@ class SearchToAdd(View):
                         bought_when=bought_when,
                     )
                     print(
-                        f"Ticker:{SearchToAdd.ticker}  Quantity: {buy_quantity}. Created an object for this transaction."
+                        f"Ticker:{SearchToAdd.ticker}  Quantity: {buy_quantity}. Created an object for this transaction"
                     )
                     return redirect("/portfolio/")
                 else:

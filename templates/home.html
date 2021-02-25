@@ -8,6 +8,10 @@
         <a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Contact Us</a>
         <a class="btn btn-outline-secondary ml-auto" href="/articles/add_article">Random?</a>
     </div>
+    <div class="navbar-nav ml-auto">
+        <a class="nav-item nav-link active" style="color:#1184ff;">Hello <span>{{request.user.username}}&#128075;&#127996;</span><span class="sr-only">(current)</span></a>
+        <a class="btn btn-secondary" href="/accounts/logout">Random? &#x2934;</a>
+    </div>
 </p>
 {% endblock %}
 {% block content %}
@@ -15,8 +19,7 @@
     <body style="background-color: #f5f5f5 ;">
         <form method="POST">
             {% csrf_token %}
-            <div class="form-inline" method="POST">
-                {% csrf_token %}
+            <div class="form-inline">
                 <div class="form-group mx-sm-3 mb-2">
                     <label for="exampleInputEmail1" class="mr-2">Username</label>
                     <input type="username" class="form-control" id="username" name="username" placeholder="username or email">
@@ -26,9 +29,13 @@
                     <input type="password" class="form-control" id="password" name="password" placeholder="password">
                 </div>
                 <div class="form-group mx-sm-3 mb-2">
-                    <button type="submit" class="btn btn-outline-success">Login</button>
-                    <a class="ml-2" href="accounts/register">( New User? Register )</a>
+                    <button type="submit" class="btn btn-secondary">Login</button>
+                    <a class="ml-2" href="accounts/register">(Forgot password?)</a>
                 </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-8 ml-auto mr-auto"><a class="btn btn-secondary" href="accounts/register"> New User? Register </a></div>
             </div>
         </form>
     </body>

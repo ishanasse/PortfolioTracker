@@ -8,14 +8,35 @@
         <a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Contact Us</a>
         <a class="btn btn-outline-secondary ml-auto" href="">Random?</a>
     </div>
+    <div class="navbar-nav ml-auto">
+        <a class="nav-item nav-link active">Hello <span>{{request.user.username}}&#128075;&#127996;</span><span class="sr-only">(current)</span></a>
+        <a class="btn btn-outline-secondary" href="/accounts/logout">Log Out &#x2934;</a>
+    </div>
 </p>
 {% endblock %}
 {% block content %}
 {% load static %}
-<div class="container mb-1">
+<div class="col-8 mx-auto">
+    <div class="row">
+        <div class="col" style="color:#1184ff;"><h4>Portfolio Stats</h4></div>
+    </div>
     <div class="row mx-auto">
-        <div class="col" style="color:green;"><h4>{{request.user.username}}'s Portfolio &#128176;</h4></div>
-        <a type="submit" class="btn btn-outline-success text-right" href="/portfolio/add/">Buy Stocks</a>
+        <div class="col" style="background-color:#E9ECEF; color:#666666;"><h4>All Time</h4></div>
+        <div class="col text-center"><h4>--</h4></div>
+        <div class="col text-center"><h4>--</h4></div>
+        <div class="col text-center"><h4>--</h4></div>
+        <div class="col text-center"><h4>--</h4></div>
+    </div>
+    <div class="row mx-auto">
+        <div class="col" style="background-color:#E9ECEF; color:#666666;"><h4>Today</h4></div>
+        <div class="col text-center"><h4>--</h4></div>
+        <div class="col text-center"><h4>--</h4></div>
+        <div class="col text-center"><h4>--</h4></div>
+        <div class="col text-center"><h4> </h4></div>
+    </div><br><br><br>
+    <div class="row">
+        <div class="col" style="color:#1184ff;"><h4>{{request.user.username}}'s Portfolio &#128176;</h4></div>
+        <a type="submit" class="btn btn-outline-primary mr-3" href="/portfolio/add/">Buy Stocks</a>
     </div>
     <table class="table">
         <thead class="thead-light">
@@ -28,9 +49,10 @@
             <th scope="col">Quantity</th>
             <th scope="col">Bougth_On</th>
             <th scope="col">Profit/Loss</th>
-            <th scope="col">P/L %</th>
-            <th scope="col">Action</th>
-            <th scope="col">LiveData</th>
+            <th scope="col">P/L%</th>
+            <th scope="col">Refresh</th>
+            <th scope="col" class="text-center">Sell</th>
+            <th scope="col" class="ml-5 text-right">LiveData</th>
         </tr>
         </thead>
         <tbody>
@@ -45,8 +67,15 @@
             <td>{{stock.bought_when}}</td>
             <td style="color:{{stock.color}};">{{stock.pl_amount}}</td>
             <td style="color:{{stock.color}};">{{stock.pl_percent}} %</td>
-            <td><form class="form" method="post">{% csrf_token %}<button class="btn btn-secondary" name="sell" value="{{stock.ticker_symbol}}">Sell</button></form></td>
-            <td><a class="btn btn-outline-primary" href="https://in.finance.yahoo.com/quote/{{stock.ticker_symbol}}" target="_blank">Live</a></td>
+            <td><a class="btn btn-outline-success" href="/portfolio/">&#8635;</a></td>
+            <td>
+                <form class="form-inline" method="post">{% csrf_token %}
+                    <div class="form-group">
+                        <input class="form-control w-25" name="qty" placeholder="Qty"><button class="btn btn-secondary" name="sell" value="{{stock.ticker_symbol}}">Sell</button>
+                    </div>
+                </form>
+            </td>
+            <td><a class="ml-5 btn btn-outline-primary" href="https://in.finance.yahoo.com/quote/{{stock.ticker_symbol}}" target="_blank">Live</a></td>
         </tr>
         {% endfor %}
         </tbody>

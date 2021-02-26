@@ -36,23 +36,23 @@
     </div><br><br><br>
     <div class="row">
         <div class="col" style="color:#1184ff;"><h4>{{request.user.username}}'s Portfolio &#128176;</h4></div>
-        <a type="submit" class="btn btn-outline-primary mr-3" href="/portfolio/add/">Buy Stocks</a>
+        <div class="col text-right"><a type="submit" class="btn btn-outline-primary" href="/portfolio/add/">Add Stocks</a></div>
     </div>
     <table class="table">
         <thead class="thead-light">
         <tr>
             <th scope="col">Symbol</th>
-            <th scope="col">Company</th>
-            <th scope="col">Exchange</th>
-            <th scope="col">Market_Price</th>
-            <th scope="col">Buy_Price</th>
-            <th scope="col">Quantity</th>
+            <th scope="col" class="text-center">Company</th>
+            <th scope="col" class="text-center">Exchange</th>
+            <th scope="col">Mrkt_Price</th>
+            <th scope="col">Avg_Buy</th>
+            <th scope="col">Qty</th>
             <th scope="col">Bougth_On</th>
-            <th scope="col">Profit/Loss</th>
-            <th scope="col">P/L%</th>
+            <th scope="col" class="text-center">Profit / Loss</th>
             <th scope="col">Refresh</th>
-            <th scope="col" class="text-center">Sell</th>
-            <th scope="col" class="ml-5 text-right">LiveData</th>
+            <th scope="col">Action_Qty</th>
+            <th scope="col" class=text-center>Action</th>
+            <th scope="col">LiveData</th>
         </tr>
         </thead>
         <tbody>
@@ -65,17 +65,16 @@
             <td>{{stock.buy_price}}</td>
             <td>{{stock.buy_quantity}}</td>
             <td>{{stock.bought_when}}</td>
-            <td style="color:{{stock.color}};">{{stock.pl_amount}}</td>
-            <td style="color:{{stock.color}};">{{stock.pl_percent}} %</td>
+            <td style="color:{{stock.color}}; white-space: nowrap;">{{stock.pl_amount}} ({{stock.pl_percent}}%)</td>
             <td><a class="btn btn-outline-success" href="/portfolio/">&#8635;</a></td>
-            <td>
-                <form class="form-inline" method="post">{% csrf_token %}
-                    <div class="form-group">
-                        <input class="form-control w-25" name="qty" placeholder="Qty"><button class="btn btn-secondary" name="sell" value="{{stock.ticker_symbol}}">Sell</button>
-                    </div>
-                </form>
-            </td>
-            <td><a class="ml-5 btn btn-outline-primary" href="https://in.finance.yahoo.com/quote/{{stock.ticker_symbol}}" target="_blank">Live</a></td>
+            <form class="form-inline" method="post">{% csrf_token %}
+                    <td><input class="form-control" name="qty" placeholder="Qty"></td>
+                    <td style='white-space: nowrap'>
+                        <button class="btn btn-secondary" name="buy" value="{{stock.ticker_symbol}}">Buy</button>
+                        <button class="btn btn-secondary" name="sell" value="{{stock.ticker_symbol}}">Sell</button>
+                    </td>
+            </form>
+            <td><a class="btn btn-outline-primary" href="https://in.finance.yahoo.com/quote/{{stock.ticker_symbol}}" target="_blank">Live</a></td>
         </tr>
         {% endfor %}
         </tbody>

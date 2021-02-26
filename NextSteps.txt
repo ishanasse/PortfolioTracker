@@ -1,10 +1,14 @@
 Date format: Added/Implemented/Confirmed
 
+
 Must Do:
-- Make sure the session expires after 3 hours of inactivity - 23/Feb/2021__23/Feb/2021__
-- Change Buy_price to Avg_Buy_Price to keep it effective when additional stocks are bought
+- Make sure the session expires after 3 hours of inactivity - 23/Feb/2021__/Feb/2021__
+- Change Buy_price to Avg_Buy_Price to keep it effective when additional stocks are bought - 24/Feb/2021__25/Feb/2021__25/Feb/2021
 
 
 To Do:
 - Add overall Portfolio Stats - 23/Feb/2021__
 - Add Portfolio history - 23/Feb/2021__
+
+
+Done:

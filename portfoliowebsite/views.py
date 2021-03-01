@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views import View
-from portfoliowebsite.models import TickerModel
+from portfoliowebsite.models import TickerModel, PortfolioHistoryModel
 from django.utils import timezone
 from datetime import date
 from django.contrib.auth.models import User, auth
@@ -37,7 +37,6 @@ class Portfolio(View):
             return redirect("/")
         # stocks = TickerModel.objects.all()
         stocks = TickerModel.objects.filter(ticker_owner=request.user)
-        stocks_buy_stats = {}
         portfolio_symbols = [stock.ticker_symbol for stock in stocks]
         market_price_data = get_market_price(portfolio_symbols)
         # print(market_price_data)
@@ -124,11 +123,21 @@ class Portfolio(View):
                 print(
                     action_instance.ticker_owner,
                     action_instance.ticker_symbol,
-                    action_instance.buy_quantity,
+                    action_quantity,
                 )
-                # move_to_pt_history({"symbol":action_instance.ticker_symbol,"company":action_instance.ticker_company, "owner":action_instance.ticker_owner,
-                # "buyprice":action_instance.buy_price, "buydate":action_instance.bought_when, "sellprice":get_market_price([sell_ticker])[sell_ticker],
-                # "selldate":str(date.today()), "buyquantity":action_instance.buy_quantity})
+                move_to_pt_history(
+                    {
+                        "symbol": action_instance.ticker_symbol,
+                        "company": action_instance.ticker_company,
+                        "exchange": action_instance.ticker_exchange,
+                        "owner": action_instance.ticker_owner,
+                        "buyprice": action_instance.buy_price,
+                        "buydate": action_instance.bought_when,
+                        "sellprice": get_market_price([action_ticker])[action_ticker],
+                        "selldate": str(date.today()),
+                        "sellquantity": action_quantity,
+                    }
+                )
 
                 if all_sold == True:
                     action_instance.delete()
@@ -141,13 +150,9 @@ class SearchToAdd(View):
     ticker_data = {}
 
     def get(self, request):
-        if not request.user.is_authenticated:
-            messages.warning(request, "Please log-in to update your Portfolio")
-            return redirect("/")
         return render(request, "search_toadd.html")
 
     def post(self, request):
-
         if ("search" in request.POST) and (request.POST.get("ticker") != ""):
             SearchToAdd.ticker = request.POST.get("ticker")
             SearchToAdd.ticker_data = retrieve_data([SearchToAdd.ticker])[
@@ -170,7 +175,7 @@ class SearchToAdd(View):
                 buy_quantity = int(request.POST.get("buy_quantity"))
 
                 if buy_quantity > 0 and buy_quantity < 1001:
-                    # TRY TO USE CASCADED FILTER HERE
+                    # Improvement: TRY TO USE CASCADED FILTER HERE
                     for stock in TickerModel.objects.filter(ticker_owner=request.user):
                         print(stock.ticker_symbol, SearchToAdd.ticker)
                         if (SearchToAdd.ticker == stock.ticker_symbol) or (
@@ -236,3 +241,104 @@ class SearchToAdd(View):
         else:
             messages.warning(request, "WARNING: invalid ticker")
             return render(request, "search_toadd.html")
+
+
+class PortfolioHistory(View):
+    def get(self, request):
+        history = PortfolioHistoryModel.objects.filter(thistory_owner=request.user)
+        history_symbols = [item.thistory_symbol for item in history]
+        market_price_data = get_market_price(history_symbols)
+        for item in history:
+            item.thistory_mprice = round(market_price_data[item.thistory_symbol], 2)
+        return render(request, "portfoliohistory.html", {"history": history})
+
+    def post(self, request):
+        try:
+            action_quantity = int(request.POST["qty"])
+            if action_quantity > 1000 or action_quantity < 1:
+                raise ValueError("Unsupported quantity")
+        except:
+            messages.warning(request, "Invalid quantity")
+            return redirect("/portfolio/history/")
+
+        if "buy" in request.POST:
+            action_ticker = request.POST.get("buy")
+            action_instance = (
+                TickerModel.objects.filter(ticker_owner=request.user)
+                .filter(ticker_symbol=action_ticker)
+                .get()
+            )
+            market_price = get_market_price([action_instance.ticker_symbol])[
+                action_instance.ticker_symbol
+            ]
+            action_instance.buy_price = round(
+                (
+                    (
+                        (action_instance.buy_price * action_instance.buy_quantity)
+                        + (market_price * action_quantity)
+                    )
+                    / (action_instance.buy_quantity + action_quantity)
+                ),
+                2,
+            )  # avg_buy_price
+            action_instance.buy_quantity = (
+                action_instance.buy_quantity + action_quantity
+            )
+            if action_instance.buy_quantity > 2000:
+                messages.warning(
+                    request,
+                    "FAILURE: Not allowed to own over 2000 stocks of single Equity.",
+                )
+                return redirect("/portfolio/history/")
+            action_instance.save()
+            return redirect("/portfolio/history/")
+            ####################### I am here
+
+        else:
+            action_ticker = request.POST.get("sell")
+            action_instance = (
+                TickerModel.objects.filter(ticker_owner=request.user)
+                .filter(ticker_symbol=action_ticker)
+                .get()
+            )
+            print(f"Selling {action_ticker} Qty:{action_quantity}")
+
+            if action_quantity > action_instance.buy_quantity:
+                messages.warning(
+                    request, "Quantity to sell greater-than Quantity owned"
+                )
+                return redirect("/portfolio/")
+
+            else:
+                all_sold = False
+                if action_quantity < action_instance.buy_quantity:
+                    action_instance.buy_quantity = (
+                        action_instance.buy_quantity - action_quantity
+                    )
+                    action_instance.save()
+
+                else:
+                    all_sold = True
+
+                # write SELL LOGIC here for PORTFOLIO HISTORY
+                print(
+                    action_instance.ticker_owner,
+                    action_instance.ticker_symbol,
+                    action_quantity,
+                )
+                move_to_pt_history(
+                    {
+                        "symbol": action_instance.ticker_symbol,
+                        "company": action_instance.ticker_company,
+                        "owner": action_instance.ticker_owner,
+                        "buyprice": action_instance.buy_price,
+                        "buydate": action_instance.bought_when,
+                        "sellprice": get_market_price([sell_ticker])[sell_ticker],
+                        "selldate": str(date.today()),
+                        "sellquantity": action_quantity,
+                    }
+                )
+
+                if all_sold == True:
+                    action_instance.delete()
+            return redirect("/portfolio/")

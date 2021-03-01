@@ -1,26 +1,58 @@
 from portfoliowebsite.models import PortfolioHistoryModel
 
-# ({symbol:sell_instance.ticker_symbol,company:sell_instance.ticker_company, owner:sell_instance.ticker_owner,
-#             buyprice:sell_instance.buy_price, buydate:sell_instance.bought_when, sellprice:get_market_price([sell_instance])[sell_instance],
-#             selldate:str(date.today())})
-#             sell_instance.delete()
 
-# thistory_symbol = models.CharField(max_length=25)
-# thistory_company = models.CharField(max_length=50)
-# thistory_owner = models.ForeignKey(
-#     User, related_name="thistory_owner", on_delete=models.CASCADE
-# )
-# thistory_bprice = models.FloatField(max_length=25)
-# thistory_bquantity = models.IntegerField()
-# thistory_bwhen = models.CharField(max_length=50)
-# thistory_swhen = models.CharField(max_length=50)
-# close_pl = models.FloatField()
 def move_to_pt_history(data: dict):
-    thistory_symbol = data["symbol"]
-    thistory_company = data[""]
-    thistory_owner = data["owner"]
-    thistory_bprice = data["buyprice"]
-    thistory_bquantity = data["buyquantity"]
-    thistory_ = data[""]
-    thistory_ = data[""]
-    thistory_ = data[""]
+    # PortfolioHistoryModel.objects.all().delete()
+    overall_pl = round((data["sellprice"] - data["buyprice"]) * data["sellquantity"], 2)
+    history_objects = (
+        PortfolioHistoryModel.objects.filter(thistory_owner=data["owner"])
+    ).filter(thistory_symbol=data["symbol"])
+
+    if len(history_objects) > 0:
+        for item in history_objects:
+            print(f"{item.thistory_symbol} is already in history")
+            item.thistory_bprice = round(
+                (
+                    (
+                        (item.thistory_bprice * item.thistory_squantity)
+                        + (data["buyprice"] * data["sellquantity"])
+                    )
+                    / (item.thistory_squantity + data["sellquantity"])
+                ),
+                2,
+            )
+            item.thistory_sprice = round(
+                (
+                    (item.thistory_sprice * item.thistory_squantity)
+                    + (data["sellprice"] * data["sellquantity"])
+                    / (item.thistory_squantity + data["sellquantity"])
+                ),
+                2,
+            )
+            item.thistory_squantity = item.thistory_squantity + data["sellquantity"]
+            item.thistory_swhen = data["selldate"]
+            item.thistory_overallpl = round((item.thistory_overallpl + overall_pl), 2)
+            item.thistory_plper = round(
+                item.thistory_overallpl
+                / (item.thistory_squantity * item.thistory_bprice),
+                2,
+            )
+            item.save()
+    else:
+        pl_per = round(
+            ((overall_pl * 100) / (data["sellquantity"] * data["buyprice"])), 2
+        )
+        PortfolioHistoryModel.objects.create(
+            thistory_symbol=data["symbol"],
+            thistory_company=data["company"],
+            thistory_exchange=data["exchange"],
+            thistory_owner=data["owner"],
+            thistory_bprice=data["buyprice"],  # avg_buy_price
+            thistory_squantity=data["sellquantity"],
+            thistory_bwhen=data["buydate"],
+            thistory_swhen=data["selldate"],
+            thistory_sprice=data["sellprice"],
+            thistory_overallpl=overall_pl,
+            thistory_plper=pl_per,
+            thistory_pcolor="#1da400" if overall_pl > 0 else "#bd0000",
+        )

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+from .secret import SECRET_KEY
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "*b8b@kis)+z5w-kn__9@*m5&jgue1=()nldi^j6on_0)i6x7%k"
+# imported
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -115,4 +116,4 @@ STATIC_URL = "/static/"
 STATIC_ROOT = str(BASE_DIR) + "/static/"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 LOGIN_URL = "/"
-SESSION_COOKIE_AGE = 120  # 10800
+SESSION_COOKIE_AGE = 900  # 15mins

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<p>
+    <div class="navbar-nav">
+        <a class="nav-item nav-link" href="">Home</a>
+        <a class="nav-item nav-link" href="/portfolio/">Portfolio</a>
+        <a class="nav-item nav-link active" href="/portfolio/history/">PortfolioHistory</a>
+        <a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Contact Us</a>
+        <a class="btn btn-outline-secondary ml-auto" href="">Random?</a>
+    </div>
+    <div class="navbar-nav ml-auto">
+        <a class="nav-item nav-link active">Hello <span>{{request.user.username}}&#128075;&#127996;</span><span class="sr-only">(current)</span></a>
+        <a class="btn btn-outline-secondary" href="/accounts/logout">Log Out &#x2934;</a>
+    </div>
+</p>
+{% endblock %}
+{% block content %}
+{% load static %}
+<a class="ml-3" href="/portfolio/"> < &nbsp; Back to portfolio </a>
+<div class="col-8 mx-auto">
+    <div class="row">
+        <div class="col" style="color:#1184ff;"><h4>{{request.user.username}}'s Portfolio History (Past positions)&#128176;</h4></div>
+        <div class="col text-right"><a type="submit" class="btn btn-outline-primary" href="/portfolio/history/">View Transactions</a></div>
+    </div>
+    <table class="table">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">Symbol</th>
+            <th scope="col" class="text-center">Company</th>
+            <th scope="col" class="text-center">Exchange</th>
+            <th scope="col">Mrkt_Price</th>
+            <th scope="col">Avg_Buy</th>
+            <th scope="col">First_Bought</th>
+            <th scope="col">Sold_Price</th>
+            <th scope="col">Sold Qty</th>
+            <th scope="col" class="text-center">Last_Sold</th>
+            <th scope="col" class="text-center">Overall_P/L</th>
+            <th scope="col">Live_Data</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in history %}
+        <tr class="text-center">
+            <th scope="row">{{item.thistory_symbol}}</th>
+            <td>{{item.thistory_company}}</td>
+            <td>{{item.thistory_exchange}}</td>
+            <td>{{item.thistory_mprice}}</td>
+            <td>{{item.thistory_bprice}}</td>
+            <td>{{item.thistory_bwhen}}</td>
+            <td>{{item.thistory_sprice}}</td>
+            <td>{{item.thistory_squantity}}</td>
+            <td>{{item.thistory_swhen}}</td>
+            <td style="color:{{item.thistory_pcolor}}; white-space: nowrap;">{{item.thistory_overallpl}} ({{item.thistory_plper}}%)</td>
+            <td><a class="btn btn-outline-primary" href="https://in.finance.yahoo.com/quote/{{stock.ticker_symbol}}" target="_blank">Live</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

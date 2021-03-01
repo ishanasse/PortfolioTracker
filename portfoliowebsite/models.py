@@ -28,11 +28,15 @@ class TickerModel(models.Model):
 class PortfolioHistoryModel(models.Model):
     thistory_symbol = models.CharField(max_length=25)
     thistory_company = models.CharField(max_length=50)
+    thistory_exchange = models.CharField(max_length=50)
     thistory_owner = models.ForeignKey(
         User, related_name="thistory_owner", on_delete=models.CASCADE
     )
     thistory_bprice = models.FloatField(max_length=25)
-    thistory_bquantity = models.IntegerField()
+    thistory_squantity = models.IntegerField()
     thistory_bwhen = models.CharField(max_length=50)
     thistory_swhen = models.CharField(max_length=50)
-    close_pl = models.FloatField()
+    thistory_sprice = models.FloatField(max_length=25)
+    thistory_overallpl = models.FloatField()
+    thistory_plper = models.FloatField()
+    thistory_pcolor = models.CharField(max_length=25)

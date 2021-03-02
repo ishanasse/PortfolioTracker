@@ -166,7 +166,7 @@ class SearchToAdd(View):
             )
 
         elif ("buy" in request.POST) and (SearchToAdd.ticker != ""):
-            if len(TickerModel.objects.all()) > 10:
+            if len(TickerModel.objects.all().filter(ticker_owner=request.user)) > 10:
                 messages.warning(
                     request, "FAILURE: Unable to track more than 10 stocks"
                 )

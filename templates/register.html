@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Track your Portfolio</title>
+        <title>PortfolioTracker</title>
         <meta charset="UTF-8">
         <meta name="viewport" content = "width=device-width, initial-scale=1"/>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
@@ -12,9 +12,9 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
         <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
-            <a class="navbar-brand" href="/">
-                <img src="{% static 'bloglogo.svg' %}" width="30" height="30" alt="">
-                BlogBench
+            <a class="navbar-brand" style="color:#1184ff;" href="/">
+                <img src="{% static 'pt_logo.svg' %}" width="30" height="30" alt="">
+                PortfolioTracker
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
@@ -51,8 +51,11 @@
             </div>
         </div>
         <br>
-        <nav class="navbar sticky-bottom navbar-light" style="background-color: #e3f2fd;">
-            <label class="ml-auto"> CONTACT US <br> Email : help@blogbench.com Phone : 18188881111 Ext xyz</label>
+        <nav class="navbar fixed-bottom navbar-light" style="background-color: #e3f2fd;">
+            <div class="col-6">
+                <div class="row">CONTACT US</div>
+                <div class="row">Email : help@portfoliotracker.com &emsp; Phone : 18188881111 Ext xyz</div>
+            </div>
         </nav>
     </body>
 </html>

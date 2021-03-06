@@ -32,10 +32,6 @@ class HomePage(View):
 
 class Portfolio(View):
     def get(self, request):
-        if not request.user.is_authenticated:
-            messages.warning(request, "Please log-in to access your Portfolio")
-            return redirect("/")
-        # stocks = TickerModel.objects.all()
         stocks = TickerModel.objects.filter(ticker_owner=request.user)
         portfolio_symbols = [stock.ticker_symbol for stock in stocks]
         market_price_data = get_market_price(portfolio_symbols)
@@ -166,6 +162,9 @@ class SearchToAdd(View):
             )
 
         elif ("buy" in request.POST) and (SearchToAdd.ticker != ""):
+            print(
+                f"LENGTH IS {len(TickerModel.objects.all().filter(ticker_owner=request.user))}"
+            )
             if len(TickerModel.objects.all().filter(ticker_owner=request.user)) > 10:
                 messages.warning(
                     request, "FAILURE: Unable to track more than 10 stocks"
@@ -177,7 +176,6 @@ class SearchToAdd(View):
                 if buy_quantity > 0 and buy_quantity < 1001:
                     # Improvement: TRY TO USE CASCADED FILTER HERE
                     for stock in TickerModel.objects.filter(ticker_owner=request.user):
-                        print(stock.ticker_symbol, SearchToAdd.ticker)
                         if (SearchToAdd.ticker == stock.ticker_symbol) or (
                             SearchToAdd.ticker.upper() == stock.ticker_symbol
                         ):

@@ -1,4 +1,4 @@
-from portfoliowebsite.models import PortfolioHistoryModel
+from portfoliowebsite.models import PortfolioHistoryModel, TransactionsModel
 
 
 def move_to_pt_history(data: dict):
@@ -56,3 +56,19 @@ def move_to_pt_history(data: dict):
             thistory_plper=pl_per,
             thistory_pcolor="#1da400" if overall_pl > 0 else "#bd0000",
         )
+
+
+def add_to_trans(data: list):
+    TransactionsModel.objects.create(
+        trans_owner=data[0],
+        trans_symbol=data[1],
+        trans_company=data[2],
+        trans_exchange=data[3],
+        trans_type=data[4],
+        trans_price=data[5],
+        trans_quantity=data[6],
+        trans_date=data[7],
+        trans_pl=data[8],
+        trans_plper=data[9],
+        trans_pcolor=data[10],
+    )

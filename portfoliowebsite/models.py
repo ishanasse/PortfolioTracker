@@ -14,15 +14,6 @@ class TickerModel(models.Model):
     buy_price = models.FloatField(max_length=25)
     buy_quantity = models.IntegerField()
     bought_when = models.CharField(max_length=50)
-    # profit_loss = models.FloatField(max_length=25)
-    # pl_percent = models.CharField(max_length=25)
-    # is_sold = models.BooleanField()
-    # sell_price = models.FloatField(max_length=25)
-    # is_sold = False
-    # sell_price = None
-
-    # def __str__(self):
-    #     return str(self.ticker_symbol)+str(self.ticker_owner)
 
 
 class PortfolioHistoryModel(models.Model):
@@ -40,3 +31,19 @@ class PortfolioHistoryModel(models.Model):
     thistory_overallpl = models.FloatField()
     thistory_plper = models.FloatField()
     thistory_pcolor = models.CharField(max_length=25)
+
+
+class TransactionsModel(models.Model):
+    trans_symbol = models.CharField(max_length=25)
+    trans_company = models.CharField(max_length=50)
+    trans_exchange = models.CharField(max_length=50)
+    trans_owner = models.ForeignKey(
+        User, related_name="trans_owner", on_delete=models.CASCADE
+    )
+    trans_type = models.CharField(max_length=25)
+    trans_price = models.FloatField(max_length=25)
+    trans_quantity = models.IntegerField()
+    trans_date = models.CharField(max_length=50)
+    trans_pl = models.CharField(max_length=25)
+    trans_plper = models.CharField(max_length=25)
+    trans_pcolor = models.CharField(max_length=25)

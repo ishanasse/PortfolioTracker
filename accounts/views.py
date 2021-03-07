@@ -29,7 +29,7 @@ def register(request):
 def logout(request):
 
     auth.logout(request)
-    messages.info(request, "You have been logged out.")
+    messages.warning(request, "You have been logged out.")
     return redirect("/")
 
 

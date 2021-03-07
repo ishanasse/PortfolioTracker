@@ -15,7 +15,6 @@ from .secret import SECRET_KEY
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-print(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -78,7 +77,10 @@ WSGI_APPLICATION = "portfoliotracker.wsgi.application"
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db.sqlite3"}
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "../db.sqlite3",
+    }
 }
 
 
@@ -114,7 +116,6 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = str(BASE_DIR) + "/static/"
-print(STATIC_ROOT)
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 LOGIN_URL = "/"
 SESSION_COOKIE_AGE = 900  # 15mins

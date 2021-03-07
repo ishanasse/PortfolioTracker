@@ -44,7 +44,7 @@ def retrieve_data(tickers: list) -> dict:
     return verified_tickers_data
 
 
-def get_market_price(tickers: list) -> dict:
+def get_market_price(tickers) -> dict:
 
     tickers_data = fetch_data(tickers)
     tickers_market_price = {}

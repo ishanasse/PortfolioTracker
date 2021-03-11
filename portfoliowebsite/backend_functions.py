@@ -59,16 +59,30 @@ def move_to_pt_history(data: dict):
 
 
 def add_to_trans(data: list):
+    pl = "-"
+    plper = ""
+    pcolor = "#000000"
+    ttype = data[4]
+    price = data[5]
+    quantity = data[6]
+    avg_buy = data[8]
+    if ttype == "SELL":
+        cost = float(avg_buy) * quantity
+        value = price * quantity
+        pl = round((value - cost), 2)
+        plper = round(((pl / cost) * 100), 2)
+        pcolor = "#1da400" if (float(pl)) > 0 else "#bd0000"
     TransactionsModel.objects.create(
-        trans_owner=data[0],
-        trans_symbol=data[1],
-        trans_company=data[2],
-        trans_exchange=data[3],
-        trans_type=data[4],
-        trans_price=data[5],
-        trans_quantity=data[6],
-        trans_date=data[7],
-        trans_pl=data[8],
-        trans_plper=data[9],
-        trans_pcolor=data[10],
+        owner=data[0],
+        symbol=data[1],
+        company=data[2],
+        exchange=data[3],
+        ttype=ttype,
+        price=price,
+        quantity=quantity,
+        date=data[7],
+        avg_buy=avg_buy,
+        pl=pl,
+        plper=plper,
+        pcolor=pcolor,
     )

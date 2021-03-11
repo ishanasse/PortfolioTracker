@@ -48,6 +48,7 @@ class Portfolio(View):
                 ((stock.pl_amount * 100) / (stock.buy_quantity * stock.buy_price)), 2
             )
             stock.color = "#1da400" if stock.pl_amount > 0 else "#bd0000"
+        stocks = reversed(stocks)
         return render(request, "portfolio.html", {"stocks": stocks})
 
     def post(self, request):
@@ -99,8 +100,6 @@ class Portfolio(View):
                     action_quantity,
                     str(date.today()),
                     "-",
-                    "-",
-                    "#000000",
                 ]
             )
             action_instance.save()
@@ -133,9 +132,7 @@ class Portfolio(View):
                         market_price,
                         action_quantity,
                         str(date.today()),
-                        "-",
-                        "-",
-                        "#000000",
+                        str(action_instance.buy_price),
                     ]
                 )
                 all_sold = False
@@ -169,8 +166,8 @@ class Portfolio(View):
 
 class SearchToAdd(View):
 
-    ticker = ""
-    ticker_data = {}
+    # ticker = ""
+    # ticker_data = {}
 
     def get(self, request):
         return render(request, "search_toadd.html")
@@ -205,7 +202,7 @@ class SearchToAdd(View):
                         stock = (
                             TickerModel.objects.filter(ticker_owner=request.user)
                             .filter(ticker_symbol=SearchToAdd.ticker.upper())
-                            .get()
+                            .get()  # If no entries, go to except block
                         )
                         market_price = get_market_price([stock.ticker_symbol])[
                             stock.ticker_symbol
@@ -238,8 +235,6 @@ class SearchToAdd(View):
                                 buy_quantity,
                                 str(date.today()),
                                 "-",
-                                "-",
-                                "#000000",
                             ]
                         )
                         stock.save()
@@ -273,8 +268,6 @@ class SearchToAdd(View):
                                 buy_quantity,
                                 str(date.today()),
                                 "-",
-                                "-",
-                                "#000000",
                             ]
                         )
 
@@ -307,6 +300,7 @@ class PortfolioHistory(View):
         market_price_data = get_market_price(history_symbols)
         for item in history:
             item.thistory_mprice = round(market_price_data[item.thistory_symbol], 2)
+        history = reversed(history)
         return render(request, "portfoliohistory.html", {"history": history})
 
     def post(self, request):
@@ -401,8 +395,5 @@ class PortfolioHistory(View):
 
 class AllTransactions(View):
     def get(self, request):
-        transactions = TransactionsModel.objects.filter(trans_owner=request.user)
-        for item in transactions:
-            print(item.trans_symbol)
-        return redirect("/portfolio/")
-        # return render(request, "transactions.html", {"transactions": transactions})
+        transactions = reversed(TransactionsModel.objects.filter(owner=request.user))
+        return render(request, "transactions.html", {"transactions": transactions})

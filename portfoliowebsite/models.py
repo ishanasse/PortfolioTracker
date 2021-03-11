@@ -34,16 +34,15 @@ class PortfolioHistoryModel(models.Model):
 
 
 class TransactionsModel(models.Model):
-    trans_symbol = models.CharField(max_length=25)
-    trans_company = models.CharField(max_length=50)
-    trans_exchange = models.CharField(max_length=50)
-    trans_owner = models.ForeignKey(
-        User, related_name="trans_owner", on_delete=models.CASCADE
-    )
-    trans_type = models.CharField(max_length=25)
-    trans_price = models.FloatField(max_length=25)
-    trans_quantity = models.IntegerField()
-    trans_date = models.CharField(max_length=50)
-    trans_pl = models.CharField(max_length=25)
-    trans_plper = models.CharField(max_length=25)
-    trans_pcolor = models.CharField(max_length=25)
+    symbol = models.CharField(max_length=25)
+    company = models.CharField(max_length=50)
+    exchange = models.CharField(max_length=50)
+    owner = models.ForeignKey(User, related_name="owner", on_delete=models.CASCADE)
+    ttype = models.CharField(max_length=25)
+    price = models.FloatField(max_length=25)
+    quantity = models.IntegerField()
+    date = models.CharField(max_length=50)
+    avg_buy = models.CharField(max_length=25)
+    pl = models.CharField(max_length=25)
+    plper = models.CharField(max_length=25)
+    pcolor = models.CharField(max_length=25)

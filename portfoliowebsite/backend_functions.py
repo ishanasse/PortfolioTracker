@@ -1,4 +1,8 @@
+from collections import namedtuple
+
+# from django.contrib.auth.models import User
 from portfoliowebsite.models import PortfolioHistoryModel, TransactionsModel
+from datetime import date
 
 
 def move_to_pt_history(data: dict):
@@ -86,3 +90,11 @@ def add_to_trans(data: list):
         plper=plper,
         pcolor=pcolor,
     )
+
+
+# def get_portfolio_stats(user):
+#     #Pstats = namedtuple('Pstats',['no_of_trans','total_invested','market_value','pl','return'])
+#     transactions = TransactionsModel.objects.filter(owner=user)
+#     sincebought = {"no_of_trans":len(transactions),"total_invested":0,"market_value":0,"pl":0,"return":0}
+#     today = {"no_of_trans":len(transactions.filter(date=str(date.today()))),"total_invested":0,"market_value":0,"pl":0,"return":0}
+#     return (sincebought, today)

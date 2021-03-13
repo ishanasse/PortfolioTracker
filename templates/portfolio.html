@@ -24,8 +24,7 @@
     <table class="table text-center">
     <thead class="thead-light">
         <tr>
-            <th scope="col" class="text-left">Date: </th>
-            <th scope="col">Transactions#</th>
+            <th scope="col" class="text-left">Date: {{sincebought.date}}</th>
             <th scope="col">Total_Invested</th>
             <th scope="col">Market_Value</th>
             <th scope="col">Profit_Loss</th>
@@ -34,20 +33,18 @@
     </thead>
         <tbody>
             <tr>
-                <th scope="row"  class="text-left">All Time</th>
-                <td>test 1</td>
-                <td>test 2</td>
-                <td>test 3</td>
-                <td>test 4</td>
-                <td>test 5</td>
+                <th scope="row"  class="text-left">Since Bought</th>
+                <td>{{sincebought.total_invested}}</td>
+                <td>{{sincebought.market_value}}</td>
+                <td style="color:{{sincebought.color}}; white-space: nowrap;">{{sincebought.total_pl}}</td>
+                <td style="color:{{sincebought.color}}; white-space: nowrap;">{{sincebought.returnper}} %</td>
             </tr>
             <tr>
                 <th scope="row" class="text-left">Today</th>
-                <td>test 1</td>
-                <td>test 2</td>
-                <td>test 3</td>
-                <td>test 4</td>
-                <td>test 5</td>
+                <td>{{today.total_invested}}</td>
+                <td>{{today.market_value}}</td>
+                <td>{{today.pl}}</td>
+                <td>{{today.return}}</td>
             </tr>
         </tbody>
     </table>

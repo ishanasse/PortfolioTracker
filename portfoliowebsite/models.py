@@ -4,7 +4,9 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 # Create your models here.
-class TickerModel(models.Model):
+
+
+class PortfolioModel(models.Model):
     ticker_symbol = models.CharField(max_length=25)
     ticker_company = models.CharField(max_length=50)
     ticker_exchange = models.CharField(max_length=50)
@@ -14,6 +16,9 @@ class TickerModel(models.Model):
     buy_price = models.FloatField(max_length=25)
     buy_quantity = models.IntegerField()
     bought_when = models.CharField(max_length=50)
+    # total_invested = models.FloatField(max_length=25)
+    # market_value = models.FloatField(max_length=25)
+    # total_pl = models.FloatField(max_length=25)
 
 
 class PortfolioHistoryModel(models.Model):

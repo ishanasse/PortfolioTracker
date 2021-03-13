@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views import View
 from portfoliowebsite.models import (
-    TickerModel,
+    PortfolioModel,
     PortfolioHistoryModel,
     TransactionsModel,
 )
@@ -36,9 +36,17 @@ class HomePage(View):
 
 class Portfolio(View):
     def get(self, request):
-        stocks = TickerModel.objects.filter(ticker_owner=request.user)
+        stocks = PortfolioModel.objects.filter(ticker_owner=request.user)
         portfolio_symbols = [stock.ticker_symbol for stock in stocks]
         market_price_data = get_market_price(portfolio_symbols)
+        sincebought = {
+            "total_invested": 0,
+            "market_value": 0,
+            "total_pl": 0,
+            "returnper": 0,
+            "date": str(date.today()),
+        }
+        total_invested = market_value = 0
         for stock in stocks:
             stock.market_price = round(market_price_data[stock.ticker_symbol], 2)
             stock.pl_amount = round(
@@ -48,8 +56,22 @@ class Portfolio(View):
                 ((stock.pl_amount * 100) / (stock.buy_quantity * stock.buy_price)), 2
             )
             stock.color = "#1da400" if stock.pl_amount > 0 else "#bd0000"
+            total_invested = total_invested + stock.buy_price * stock.buy_quantity
+            market_value = market_value + stock.market_price * stock.buy_quantity
+        total_pl = market_value - total_invested
+        color = "#1da400" if total_pl > 0 else "#bd0000"
+        if total_invested != 0:
+            sincebought = {
+                "total_invested": total_invested,
+                "market_value": market_value,
+                "total_pl": total_pl,
+                "returnper": round((total_pl * 100 / total_invested), 2),
+                "color": color,
+            }
         stocks = reversed(stocks)
-        return render(request, "portfolio.html", {"stocks": stocks})
+        return render(
+            request, "portfolio.html", {"stocks": stocks, "sincebought": sincebought}
+        )  # ,"today":today})
 
     def post(self, request):
         try:
@@ -63,7 +85,7 @@ class Portfolio(View):
         if "buy" in request.POST:
             action_ticker = request.POST.get("buy")
             action_instance = (
-                TickerModel.objects.filter(ticker_owner=request.user)
+                PortfolioModel.objects.filter(ticker_owner=request.user)
                 .filter(ticker_symbol=action_ticker)
                 .get()
             )
@@ -109,7 +131,7 @@ class Portfolio(View):
             action_ticker = request.POST.get("sell")
             market_price = get_market_price([action_ticker])[action_ticker]
             action_instance = (
-                TickerModel.objects.filter(ticker_owner=request.user)
+                PortfolioModel.objects.filter(ticker_owner=request.user)
                 .filter(ticker_symbol=action_ticker)
                 .get()
             )
@@ -187,9 +209,9 @@ class SearchToAdd(View):
 
         elif ("buy" in request.POST) and (SearchToAdd.ticker != ""):
             print(
-                f"LENGTH IS {len(TickerModel.objects.all().filter(ticker_owner=request.user))}"
+                f"LENGTH IS {len(PortfolioModel.objects.all().filter(ticker_owner=request.user))}"
             )
-            if len(TickerModel.objects.all().filter(ticker_owner=request.user)) > 10:
+            if len(PortfolioModel.objects.all().filter(ticker_owner=request.user)) > 10:
                 messages.warning(
                     request, "FAILURE: Unable to track more than 10 stocks"
                 )
@@ -200,7 +222,7 @@ class SearchToAdd(View):
 
                     try:
                         stock = (
-                            TickerModel.objects.filter(ticker_owner=request.user)
+                            PortfolioModel.objects.filter(ticker_owner=request.user)
                             .filter(ticker_symbol=SearchToAdd.ticker.upper())
                             .get()  # If no entries, go to except block
                         )
@@ -246,7 +268,7 @@ class SearchToAdd(View):
                         # ticker_exchange = SearchToAdd.ticker_data["fullExchangeName"]
                         # buy_price = SearchToAdd.ticker_data["regularMarketPrice"]
                         # bought_when = str(date.today())
-                        TickerModel.objects.create(
+                        PortfolioModel.objects.create(
                             ticker_owner=request.user,
                             ticker_symbol=SearchToAdd.ticker_data["symbol"].upper(),
                             ticker_company=SearchToAdd.ticker_data["shortName"],
@@ -315,7 +337,7 @@ class PortfolioHistory(View):
         if "buy" in request.POST:
             action_ticker = request.POST.get("buy")
             action_instance = (
-                TickerModel.objects.filter(ticker_owner=request.user)
+                PortfolioModel.objects.filter(ticker_owner=request.user)
                 .filter(ticker_symbol=action_ticker)
                 .get()
             )
@@ -347,7 +369,7 @@ class PortfolioHistory(View):
         else:
             action_ticker = request.POST.get("sell")
             action_instance = (
-                TickerModel.objects.filter(ticker_owner=request.user)
+                PortfolioModel.objects.filter(ticker_owner=request.user)
                 .filter(ticker_symbol=action_ticker)
                 .get()
             )

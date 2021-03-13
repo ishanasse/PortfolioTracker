@@ -1,3 +1,4 @@
 db.sqlite3
 portfoliotracker/secret.py
 !**/__pycache__/
+portfoliotracker/settings.py
